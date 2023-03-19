@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:instabug_task/Movies/bloc/movie_bloc.dart';
+import 'package:instabug_task/Movies/bloc/movie_state.dart';
+import 'package:instabug_task/Movies/widgets/bottom_loader.dart';
+import 'package:instabug_task/Movies/widgets/movies_list_item.dart';
 
-import '../bloc/movie_bloc.dart';
-import '../bloc/movie_event.dart';
-import '../bloc/movie_state.dart';
-import '../widgets/bottom_loader.dart';
-import '../widgets/post_list_item.dart';
+import 'package:instabug_task/Movies/bloc/movie_event.dart';
+
 
 class MoviesList extends StatefulWidget {
   const MoviesList({super.key});

@@ -1,12 +1,12 @@
 
 
 import 'package:equatable/equatable.dart';
-import 'package:instabug_task/Movies/models/models.dart';
+import 'package:instabug_task/Movies/domain/models/models.dart';
 
 enum MovieStatus { initial, success, failure }
 
 class MovieState extends Equatable {
-  const MovieState({
+   MovieState({
     this.status = MovieStatus.initial,
     this.movies = const <MovieItem>[],
     this.hasReachedMax = false,
@@ -34,5 +34,5 @@ class MovieState extends Equatable {
   }
 
   @override
-  List<Object> get props => [status, Movies, hasReachedMax];
+  List<Object> get props => [status, movies, hasReachedMax];
 }

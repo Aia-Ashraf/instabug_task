@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instabug_task/Movies/models/models.dart';
+import '../domain/models/movie_item.dart';
 
 
 class MovieListItem extends StatelessWidget {
@@ -9,13 +9,10 @@ class MovieListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Material(
       child: ListTile(
-        leading: Text('${movie.id}', style: textTheme.bodySmall),
+        leading: Image.network("https://image.tmdb.org/t/p/w500"+ movie.backdropPath.toString(),height: 40,width: 40,),
         title: Text(movie.title??""),
-        isThreeLine: true,
-        subtitle: Text(movie.title??""),
         dense: true,
       ),
     );

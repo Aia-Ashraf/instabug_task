@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'Movies/view/movies_page.dart';
+import 'Movies/presentation//view/movies_page.dart';
 
 
 class App extends MaterialApp {

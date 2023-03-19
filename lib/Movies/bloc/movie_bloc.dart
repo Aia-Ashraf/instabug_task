@@ -1,17 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:instabug_task/Movies/models/models.dart';
+import 'package:instabug_task/Movies/data/remote/movies_api_provider.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'movie_event.dart';
 import 'movie_state.dart';
 
-const _MovieLimit = 20;
 const throttleDuration = Duration(milliseconds: 100);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
@@ -21,14 +17,15 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class MovieBloc extends Bloc<MovieEvent, MovieState> {
-  MovieBloc({required this.httpClient}) : super(const MovieState()) {
+  MovieBloc({required this.apiProvider}) : super(MovieState()) {
     on<MovieFetched>(
       _onMovieFetched,
       transformer: throttleDroppable(throttleDuration),
     );
   }
 
-  final http.Client httpClient;
+  final MoviesApiProvider apiProvider;
+
 
   Future<void> _onMovieFetched(
     MovieFetched event,
@@ -37,7 +34,7 @@ class MovieBloc extends Bloc<MovieEvent, MovieState> {
     if (state.hasReachedMax) return;
     try {
       if (state.status == MovieStatus.initial) {
-        final Movies = await _fetchMovies();
+        final Movies = await apiProvider.fetchMovies();
         return emit(
           state.copyWith(
             status: MovieStatus.success,
@@ -46,7 +43,7 @@ class MovieBloc extends Bloc<MovieEvent, MovieState> {
           ),
         );
       }
-      final movies = await _fetchMovies(state.movies.length);
+      final movies = await apiProvider.fetchMovies(state.movies.length);
       movies!.isEmpty
           ? emit(state.copyWith(hasReachedMax: true))
           : emit(
@@ -59,26 +56,5 @@ class MovieBloc extends Bloc<MovieEvent, MovieState> {
     } catch (_) {
       emit(state.copyWith(status: MovieStatus.failure));
     }
-  }
-
-  Future<List<MovieItem>?> _fetchMovies([int startIndex = 0]) async {
-    final response = await httpClient.get(
-      Uri.https(
-          'api.themoviedb.org',
-          '/3/discover/movie',{
-            'api_key':'66318345e625439a18db0447a6d'
-                ''
-                'ab6a9',
-          }),
-    );
-    print("aia${response.request!.url}" ?? "");
-    if (response.statusCode == 200) {
-      if (kDebugMode) {
-        print("aiaM${response.request!.url}" ?? "");
-      }
-      final body = json.decode(response.body) ;
-      return Movies.fromJson(body).movies;
-    }
-    throw Exception('error fetching Movies${response.request!.url}');
   }
 }
